@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seshat Fabric Simulator</title>
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header id="header">
+      <h1>Seshat Fabric</h1>
+      <nav id="module-tabs">
+        <button class="tab active" data-module="designer">T-Piece Designer</button>
+        <button class="tab" data-module="assembly">Assembly Sandbox</button>
+        <button class="tab" data-module="magnetic">Magnetic Model</button>
+        <button class="tab" data-module="power">Power Calculator</button>
+        <button class="tab" data-module="catalog">Behavioral Catalog</button>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main id="main">
+      <!-- 3D viewport -->
+      <div id="viewport"></div>
+
+      <!-- Side panel -->
+      <aside id="panel">
+        <!-- T-Piece Designer controls -->
+        <div id="designer-panel" class="panel-content active">
+          <h2>T-Piece Parameters</h2>
+
+          <div class="param-group">
+            <h3>Presets</h3>
+            <div class="preset-buttons">
+              <button class="preset-btn" data-preset="proof">Proof of Concept (50mm)</button>
+              <button class="preset-btn" data-preset="tabletop">Tabletop Demo (25mm)</button>
+              <button class="preset-btn" data-preset="wearable">Wearable Scale (12mm)</button>
+              <button class="preset-btn" data-preset="arm">Arm Cover (6mm)</button>
+            </div>
+          </div>
+
+          <div class="param-group">
+            <h3>Crossbar</h3>
+            <label>
+              Length <span class="value" id="val-cb-length">25</span> mm
+              <input type="range" id="cb-length" min="4" max="100" value="25" step="1">
+            </label>
+            <label>
+              Width <span class="value" id="val-cb-width">3</span> mm
+              <input type="range" id="cb-width" min="1" max="10" value="3" step="0.5">
+            </label>
+            <label>
+              Thickness <span class="value" id="val-cb-thickness">2</span> mm
+              <input type="range" id="cb-thickness" min="0.5" max="5" value="2" step="0.5">
+            </label>
+          </div>
+
+          <div class="param-group">
+            <h3>Stem</h3>
+            <label>
+              Min Length <span class="value" id="val-st-min">5</span> mm
+              <input type="range" id="st-min" min="2" max="40" value="5" step="1">
+            </label>
+            <label>
+              Max Length <span class="value" id="val-st-max">22</span> mm
+              <input type="range" id="st-max" min="4" max="60" value="22" step="1">
+            </label>
+            <label>
+              Width <span class="value" id="val-st-width">2.5</span> mm
+              <input type="range" id="st-width" min="1" max="8" value="2.5" step="0.5">
+            </label>
+          </div>
+
+          <div class="param-group">
+            <h3>Magnets</h3>
+            <label>
+              Diameter <span class="value" id="val-mag-dia">3</span> mm
+              <input type="range" id="mag-dia" min="1" max="10" value="3" step="0.5">
+            </label>
+            <label>
+              Depth <span class="value" id="val-mag-depth">1.5</span> mm
+              <input type="range" id="mag-depth" min="0.5" max="5" value="1.5" step="0.5">
+            </label>
+          </div>
+
+          <div class="param-group">
+            <h3>Display</h3>
+            <label class="checkbox-label">
+              <input type="checkbox" id="show-wireframe"> Wireframe overlay
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="show-magnets" checked> Show magnet recesses
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="show-dimensions"> Show dimensions
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="show-polygon" checked> Show polygon preview
+            </label>
+            <select id="polygon-type">
+              <option value="triangle">Triangle (3 pieces)</option>
+              <option value="hexagon" selected>Hexagon (6 pieces)</option>
+              <option value="square">Square (4 pieces)</option>
+            </select>
+          </div>
+
+          <div class="param-group">
+            <h3>Export</h3>
+            <button id="export-stl" class="action-btn">Export STL</button>
+            <button id="export-params" class="action-btn secondary">Export Parameters (JSON)</button>
+          </div>
+
+          <div class="param-group">
+            <h3>Info</h3>
+            <div id="info-panel">
+              <div class="info-row"><span>Volume:</span><span id="info-volume">-</span></div>
+              <div class="info-row"><span>Weight (PETG):</span><span id="info-weight">-</span></div>
+              <div class="info-row"><span>Stem range:</span><span id="info-stem-range">-</span></div>
+              <div class="info-row"><span>Hex inscribed r:</span><span id="info-hex-radius">-</span></div>
+              <div class="info-row"><span>Stem reaches:</span><span id="info-stem-reaches">-</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assembly Sandbox controls (placeholder) -->
+        <div id="assembly-panel" class="panel-content">
+          <h2>Assembly Sandbox</h2>
+          <p class="placeholder">Coming in Phase 4</p>
+        </div>
+
+        <!-- Magnetic Model controls (placeholder) -->
+        <div id="magnetic-panel" class="panel-content">
+          <h2>Magnetic Model</h2>
+          <p class="placeholder">Coming in Phase 2</p>
+        </div>
+
+        <!-- Power Calculator controls (placeholder) -->
+        <div id="power-panel" class="panel-content">
+          <h2>Power Calculator</h2>
+          <p class="placeholder">Coming in Phase 2</p>
+        </div>
+
+        <!-- Behavioral Catalog controls (placeholder) -->
+        <div id="catalog-panel" class="panel-content">
+          <h2>Behavioral Catalog</h2>
+          <p class="placeholder">Coming in Phase 1</p>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Status bar -->
+    <footer id="status-bar">
+      <span id="status-text">Ready</span>
+      <span id="status-fps"></span>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
