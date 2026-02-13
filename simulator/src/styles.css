@@ -305,6 +305,43 @@ select {
   flex-shrink: 0;
 }
 
+/* === Help text === */
+.help-text {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+  padding-left: 4px;
+}
+
+/* === Inner info panels === */
+.info-panel-inner {
+  background: var(--bg-input);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+/* === Mode legend === */
+.mode-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
 /* === Placeholder === */
 .placeholder {
   color: var(--text-dim);

@@ -9,11 +9,14 @@
  * - Module tab switching
  */
 
+import * as THREE from 'three';
 import { createScene } from './scene.js';
 import { buildTPiece, buildPolygonPreview, computeInfo, PRESETS, DEFAULTS } from './geometry/t-piece.js';
 import { exportSTL, downloadSTL } from './export-stl.js';
+import { AssemblySandbox } from './assembly/sandbox.js';
 
 // --- State ---
+let currentModule = 'designer';
 let currentParams = { ...DEFAULTS };
 let tPieceGroup = null;
 let polygonGroup = null;
@@ -234,17 +237,88 @@ document.getElementById('export-params')?.addEventListener('click', () => {
   updateStatus('Exported parameters JSON');
 });
 
-// --- Module tab switching ---
-document.querySelectorAll('.tab').forEach((tab) => {
-  tab.addEventListener('click', () => {
-    // Update tab active state
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+// === Assembly Sandbox ===
+const sandbox = new AssemblySandbox(scene, camera, renderer);
 
-    // Update panel visibility
-    const module = tab.dataset.module;
-    document.querySelectorAll('.panel-content').forEach(p => p.classList.remove('active'));
-    const panel = document.getElementById(`${module}-panel`);
-    if (panel) panel.classList.add('active');
-  });
+// Assembly panel bindings
+document.getElementById('placement-type')?.addEventListener('change', (e) => {
+  sandbox.placementType = e.target.value;
+});
+
+document.getElementById('show-edges')?.addEventListener('change', (e) => {
+  sandbox.showEdges = e.target.checked;
+  sandbox._render();
+});
+
+document.getElementById('show-modes')?.addEventListener('change', (e) => {
+  sandbox.showModes = e.target.checked;
+  sandbox._render();
+});
+
+document.getElementById('impact-force')?.addEventListener('input', (e) => {
+  document.getElementById('val-impact-force').textContent = e.target.value;
+});
+
+document.getElementById('clear-impact')?.addEventListener('click', () => {
+  sandbox.clearImpact();
+  updateStatus('Impact cleared');
+});
+
+document.getElementById('cycle-mode')?.addEventListener('click', () => {
+  if (sandbox.selectedUuid !== null) {
+    sandbox.cycleMode(sandbox.selectedUuid);
+    updateStatus(`Cycled mode for cell ${sandbox.selectedUuid}`);
+  }
+});
+
+document.getElementById('reset-assembly')?.addEventListener('click', () => {
+  sandbox.reset();
+  updateStatus('Assembly reset');
+});
+
+// --- Module tab switching ---
+function switchModule(module) {
+  const prevModule = currentModule;
+  currentModule = module;
+
+  // Update tab active state
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.tab[data-module="${module}"]`)?.classList.add('active');
+
+  // Update panel visibility
+  document.querySelectorAll('.panel-content').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(`${module}-panel`);
+  if (panel) panel.classList.add('active');
+
+  // Handle module activation/deactivation
+  if (prevModule === 'assembly' && module !== 'assembly') {
+    sandbox.deactivate();
+    // Show designer geometry again
+    rebuildGeometry();
+  }
+
+  if (module === 'assembly') {
+    // Hide designer geometry, activate sandbox
+    if (tPieceGroup) { scene.remove(tPieceGroup); }
+    if (polygonGroup) { scene.remove(polygonGroup); }
+    if (wireframeOverlay) { scene.remove(wireframeOverlay); }
+
+    // Adjust camera for top-down view
+    camera.position.set(0, 80, 0);
+    camera.lookAt(0, 0, 0);
+    controls.update();
+
+    sandbox.params = { ...currentParams };
+    sandbox.activate(viewport);
+    updateStatus('Assembly Sandbox — click to place, shift+click to impact, right-click to inspect');
+  } else if (module === 'designer') {
+    // Reset camera for 3D view
+    camera.position.set(40, 30, 40);
+    camera.lookAt(0, 0, 0);
+    controls.update();
+  }
+}
+
+document.querySelectorAll('.tab').forEach((tab) => {
+  tab.addEventListener('click', () => switchModule(tab.dataset.module));
 });

@@ -124,10 +124,87 @@
           </div>
         </div>
 
-        <!-- Assembly Sandbox controls (placeholder) -->
+        <!-- Assembly Sandbox controls -->
         <div id="assembly-panel" class="panel-content">
           <h2>Assembly Sandbox</h2>
-          <p class="placeholder">Coming in Phase 4</p>
+
+          <div class="param-group">
+            <h3>Controls</h3>
+            <p class="help-text">Left-click: place polygon</p>
+            <p class="help-text">Right-click: select cell</p>
+            <p class="help-text">Shift+click: simulate impact</p>
+          </div>
+
+          <div class="param-group">
+            <h3>Placement</h3>
+            <select id="placement-type">
+              <option value="triangle">Triangle (3 pieces)</option>
+              <option value="hexagon" selected>Hexagon (6 pieces)</option>
+              <option value="square">Square (4 pieces)</option>
+            </select>
+          </div>
+
+          <div class="param-group">
+            <h3>Display</h3>
+            <label class="checkbox-label">
+              <input type="checkbox" id="show-edges" checked> Show ε graph
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="show-modes" checked> Color by σ mode
+            </label>
+          </div>
+
+          <div class="param-group">
+            <h3>Impact Simulation</h3>
+            <label>
+              Force <span class="value" id="val-impact-force">5</span> N
+              <input type="range" id="impact-force" min="0.5" max="50" value="5" step="0.5">
+            </label>
+            <button id="clear-impact" class="action-btn secondary">Clear Impact</button>
+          </div>
+
+          <div class="param-group">
+            <h3>Actions</h3>
+            <button id="cycle-mode" class="action-btn secondary">Cycle Selected Mode</button>
+            <button id="reset-assembly" class="action-btn secondary">Reset Assembly</button>
+          </div>
+
+          <div class="param-group">
+            <h3>Structure Stats</h3>
+            <div id="assembly-stats" class="info-panel-inner">
+              <p class="placeholder">Place polygons to begin</p>
+            </div>
+          </div>
+
+          <div class="param-group">
+            <h3>Selected Cell</h3>
+            <div id="cell-info" class="info-panel-inner">
+              <p class="placeholder">Right-click a cell to inspect</p>
+            </div>
+          </div>
+
+          <div class="param-group">
+            <h3>Impact Results</h3>
+            <div id="impact-info" class="info-panel-inner">
+              <p class="placeholder">Shift+click to simulate impact</p>
+            </div>
+          </div>
+
+          <div class="param-group">
+            <h3>Mode Legend</h3>
+            <div id="mode-legend" class="mode-legend">
+              <div class="legend-item"><span class="legend-swatch" style="background:#4488cc"></span>rigid</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:#66aadd"></span>flex</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:#44cc88"></span>relay-recv</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:#88cc44"></span>relay-pass</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:#cccc44"></span>attract</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:#cc8844"></span>release</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:#cc4444"></span>transit</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:#44cccc"></span>harvest</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:#aa44cc"></span>sense</div>
+              <div class="legend-item"><span class="legend-swatch" style="background:#555566"></span>idle</div>
+            </div>
+          </div>
         </div>
 
         <!-- Magnetic Model controls (placeholder) -->
