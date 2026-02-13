@@ -342,6 +342,34 @@ select {
   border-radius: 2px;
 }
 
+/* === Power sections === */
+.power-section {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.power-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.power-section h4 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+/* === Canvas charts === */
+canvas {
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
 /* === Placeholder === */
 .placeholder {
   color: var(--text-dim);

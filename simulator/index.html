@@ -207,16 +207,101 @@
           </div>
         </div>
 
-        <!-- Magnetic Model controls (placeholder) -->
+        <!-- Magnetic Model controls -->
         <div id="magnetic-panel" class="panel-content">
           <h2>Magnetic Model</h2>
-          <p class="placeholder">Coming in Phase 2</p>
+
+          <div class="param-group">
+            <h3>Magnet Configuration</h3>
+            <label>
+              Grade
+              <select id="mag-grade">
+                <option value="N35">N35 (1.19T)</option>
+                <option value="N42" selected>N42 (1.30T)</option>
+                <option value="N52">N52 (1.45T)</option>
+              </select>
+            </label>
+            <label>
+              Diameter <span class="value" id="val-mag-model-dia">3</span> mm
+              <input type="range" id="mag-model-dia" min="1" max="10" value="3" step="0.5">
+            </label>
+            <label>
+              Height <span class="value" id="val-mag-height">1.5</span> mm
+              <input type="range" id="mag-height" min="0.5" max="5" value="1.5" step="0.5">
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="mag-compare" checked> Compare all grades
+            </label>
+          </div>
+
+          <div class="param-group">
+            <h3>Force Curve</h3>
+            <canvas id="force-chart" width="280" height="220"></canvas>
+          </div>
+
+          <div class="param-group">
+            <h3>Key Metrics</h3>
+            <div id="magnet-metrics" class="info-panel-inner">
+              <p class="placeholder">Adjust parameters above</p>
+            </div>
+          </div>
         </div>
 
-        <!-- Power Calculator controls (placeholder) -->
+        <!-- Power Calculator controls -->
         <div id="power-panel" class="panel-content">
           <h2>Power Calculator</h2>
-          <p class="placeholder">Coming in Phase 2</p>
+
+          <div class="param-group">
+            <h3>Cell Configuration</h3>
+            <label>
+              Cell size <span class="value" id="val-power-cell">25</span> mm
+              <input type="range" id="power-cell-size" min="4" max="100" value="25" step="1">
+            </label>
+            <label>
+              Processor
+              <select id="power-processor">
+                <option value="attiny85">ATtiny85 (ultra-low power)</option>
+                <option value="rp2040">RP2040 (low power)</option>
+                <option value="esp32c3" selected>ESP32-C3 (BLE capable)</option>
+              </select>
+            </label>
+            <label>
+              Magnet grade
+              <select id="power-magnet">
+                <option value="N35">N35</option>
+                <option value="N42" selected>N42</option>
+                <option value="N52">N52</option>
+              </select>
+            </label>
+            <label>
+              Magnet size <span class="value" id="val-power-mag-size">3</span> mm
+              <input type="range" id="power-mag-size" min="1" max="10" value="3" step="0.5">
+            </label>
+          </div>
+
+          <div class="param-group">
+            <h3>Environment</h3>
+            <select id="power-environment">
+              <option value="indoor_dim">Indoor dim (100 lux)</option>
+              <option value="indoor_bright">Indoor bright (500 lux)</option>
+              <option value="outdoor_cloudy">Outdoor cloudy (10k lux)</option>
+              <option value="outdoor_sunny" selected>Outdoor sunny (50k lux)</option>
+            </select>
+            <label>
+              Switch type
+              <select id="power-switch">
+                <option value="sma" selected>SMA wire (strong, slow)</option>
+                <option value="coil">Electromagnet (weak, fast)</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="param-group">
+            <h3>Results</h3>
+            <div id="power-results" class="info-panel-inner">
+              <p class="placeholder">Configure cell above</p>
+            </div>
+          </div>
         </div>
 
         <!-- Behavioral Catalog controls (placeholder) -->

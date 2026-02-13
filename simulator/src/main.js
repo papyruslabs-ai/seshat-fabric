@@ -14,6 +14,8 @@ import { createScene } from './scene.js';
 import { buildTPiece, buildPolygonPreview, computeInfo, PRESETS, DEFAULTS } from './geometry/t-piece.js';
 import { exportSTL, downloadSTL } from './export-stl.js';
 import { AssemblySandbox } from './assembly/sandbox.js';
+import { calculatePowerBudget, renderPowerBudget } from './physics/power-calculator.js';
+import { computeForceCurve, compareMagnets, renderForceCurveChart, renderMagnetMetrics } from './physics/magnetic-model.js';
 
 // --- State ---
 let currentModule = 'designer';
@@ -276,6 +278,73 @@ document.getElementById('reset-assembly')?.addEventListener('click', () => {
   updateStatus('Assembly reset');
 });
 
+// === Power Calculator ===
+function updatePowerBudget() {
+  const config = {
+    cbLength: parseFloat(document.getElementById('power-cell-size')?.value || 25),
+    processor: document.getElementById('power-processor')?.value || 'esp32c3',
+    magnetClass: document.getElementById('power-magnet')?.value || 'N42',
+    magnetSize: parseFloat(document.getElementById('power-mag-size')?.value || 3),
+    environment: document.getElementById('power-environment')?.value || 'outdoor_sunny',
+    magnetSwitchType: document.getElementById('power-switch')?.value || 'sma',
+  };
+
+  const result = calculatePowerBudget(config);
+  renderPowerBudget(result);
+}
+
+document.getElementById('power-cell-size')?.addEventListener('input', (e) => {
+  document.getElementById('val-power-cell').textContent = e.target.value;
+  updatePowerBudget();
+});
+document.getElementById('power-processor')?.addEventListener('change', updatePowerBudget);
+document.getElementById('power-magnet')?.addEventListener('change', updatePowerBudget);
+document.getElementById('power-mag-size')?.addEventListener('input', (e) => {
+  document.getElementById('val-power-mag-size').textContent = e.target.value;
+  updatePowerBudget();
+});
+document.getElementById('power-environment')?.addEventListener('change', updatePowerBudget);
+document.getElementById('power-switch')?.addEventListener('change', updatePowerBudget);
+
+// === Magnetic Model ===
+function updateMagneticModel() {
+  const grade = document.getElementById('mag-grade')?.value || 'N42';
+  const diameter = parseFloat(document.getElementById('mag-model-dia')?.value || 3);
+  const height = parseFloat(document.getElementById('mag-height')?.value || 1.5);
+  const compareAll = document.getElementById('mag-compare')?.checked;
+
+  const canvas = document.getElementById('force-chart');
+  if (!canvas) return;
+
+  let curves;
+  if (compareAll) {
+    curves = compareMagnets([
+      { grade: 'N35', diameter, height },
+      { grade: 'N42', diameter, height },
+      { grade: 'N52', diameter, height },
+    ]);
+  } else {
+    curves = [computeForceCurve({ grade, diameter, height })];
+  }
+
+  renderForceCurveChart(canvas, curves);
+
+  // Show metrics for the selected grade
+  const selectedCurve = curves.find(c => c.grade === grade) || curves[0];
+  renderMagnetMetrics(selectedCurve);
+}
+
+document.getElementById('mag-grade')?.addEventListener('change', updateMagneticModel);
+document.getElementById('mag-model-dia')?.addEventListener('input', (e) => {
+  document.getElementById('val-mag-model-dia').textContent = e.target.value;
+  updateMagneticModel();
+});
+document.getElementById('mag-height')?.addEventListener('input', (e) => {
+  document.getElementById('val-mag-height').textContent = e.target.value;
+  updateMagneticModel();
+});
+document.getElementById('mag-compare')?.addEventListener('change', updateMagneticModel);
+
 // --- Module tab switching ---
 function switchModule(module) {
   const prevModule = currentModule;
@@ -316,6 +385,10 @@ function switchModule(module) {
     camera.position.set(40, 30, 40);
     camera.lookAt(0, 0, 0);
     controls.update();
+  } else if (module === 'magnetic') {
+    updateMagneticModel();
+  } else if (module === 'power') {
+    updatePowerBudget();
   }
 }
 
