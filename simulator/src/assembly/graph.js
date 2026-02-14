@@ -97,7 +97,7 @@ export class EpsilonGraph {
 
       cell.position.x = x + inscribedR * Math.cos(angle);
       cell.position.z = z + inscribedR * Math.sin(angle);
-      cell.rotation = angle + Math.PI; // Stem points inward
+      cell.rotation = angle - Math.PI / 2; // Stem points inward toward center
       cell.polygonId = polygonId;
       cell.slotIndex = i;
 
@@ -159,8 +159,8 @@ export class EpsilonGraph {
     const sides = type === 'triangle' ? 3 : type === 'square' ? 4 : 6;
     const inscribedR = params.cbLength / (2 * Math.tan(Math.PI / sides));
 
-    // Offset from the snap point outward
-    const outwardAngle = bestCell.rotation + (bestPoint === 'EP_L' ? Math.PI / 2 : -Math.PI / 2);
+    // Offset from the snap point outward (radial direction from polygon center)
+    const outwardAngle = bestCell.rotation + Math.PI / 2; // Local +Z = outward from polygon
     const cx = worldPos.x + inscribedR * 2 * Math.cos(outwardAngle);
     const cz = worldPos.z + inscribedR * 2 * Math.sin(outwardAngle);
 

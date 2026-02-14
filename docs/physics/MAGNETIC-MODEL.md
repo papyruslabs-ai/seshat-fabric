@@ -53,7 +53,38 @@ For 5mm magnets: continuous field when spacing < 15mm (cell size < ~20mm edge-to
 
 **At arm-scale cells (6mm crossbar)**: With 2mm magnets at ~4mm spacing, we are in the **transition zone** — individual dipoles overlap but don't fully merge. This creates a partially continuous field with local peaks at magnet positions.
 
-## 2. Switchable Magnet Options
+## 2. Connection Zones
+
+Each T-piece has **6 connection zones** (see [T-PIECE-SPEC](../fabrication/T-PIECE-SPEC.md) for geometry). The crossbar has a square cross-section, giving three usable faces plus two endpoints and the stem tip. Every magnetic bond also carries electrical contacts (V+, GND, DATA, TRIG) — see [T-PIECE-SPEC Section 6](../fabrication/T-PIECE-SPEC.md) for the full electrical contact architecture.
+
+### Point Connections (EP_L, EP_R, ST_TIP)
+
+Cylindrical permanent magnets in cylindrical bores. Force governed by the dipole-dipole law in Section 1.
+
+- **EP_L / EP_R**: Opposite polarity (South-out / North-out). Adjacent cells in a polygon attract naturally.
+- **ST_TIP**: Candidate for switchable operation (EPM — see Section 2.2).
+
+### Face Connections (F_TOP, F_LEFT, F_RIGHT)
+
+Magnetic strips (or rows of small disc magnets) along the full crossbar length. These provide:
+
+- **F_TOP**: Inter-polygon bonding. Two parallel crossbars (neighboring polygons sharing an edge) bond F_TOP to F_TOP. This frees EP_L/EP_R exclusively for intra-polygon use.
+- **F_LEFT / F_RIGHT**: 3D layer stacking. Out-of-plane bonds for volumetric structures.
+
+Force for a magnetic strip of length L, width w, remanence B_r, at gap g with overlap L_overlap:
+
+```
+F_face ≈ (B_r² × w × L_overlap) / (2μ₀) × f(g/w)
+```
+
+where f(g/w) is a geometry factor ≈ 1 for g ≪ w, dropping to ~0.1 for g = w.
+
+For a 25mm crossbar with 3mm-wide magnetic strip, full overlap, at 0.5mm gap:
+- F_face ≈ (1.3² × 0.003 × 0.025) / (2 × 4π × 10⁻⁷) ≈ ~50 N
+
+This is much stronger than point connections because the contact area is large. Face connections are inherently structural.
+
+## 2.1 Switchable Magnet Options
 
 ### Option A: Electromagnet Coil
 
@@ -85,13 +116,48 @@ Permanent magnets provide structural force. A small actuator (piezo, shape-memor
 
 **Verdict**: Strong structural force, moderate switching speed. Best for assembly/disassembly.
 
-### Option C: Hybrid
+### Option C: Electropermanent Magnet (EPM) — Recommended
 
-- **Permanent magnets** at crossbar-crossbar connections (structural, rarely released)
-- **Electromagnets** at stem tip (frequent switching during routing)
-- **SMA release** for permanent magnets when disassembly needed
+An EPM pairs a hard magnet (NdFeB, coercivity ~1000 kA/m) with a soft magnet (AlNiCo 5, coercivity ~50 kA/m), wrapped by a coil. A brief current pulse switches the AlNiCo's polarity without affecting the NdFeB.
 
-**Verdict**: Best of both worlds. Structural connections are strong and passive. Routing connections are weak but fast.
+```
+State ON:  NdFeB →→  AlNiCo →→   (aligned: strong external field)
+State OFF: NdFeB →→  AlNiCo ←←   (opposed: fields cancel, near-zero external)
+```
+
+| Parameter | Value (3mm EPM) | Value (2mm EPM) |
+|-----------|----------------|----------------|
+| NdFeB | 3mm × 1.5mm N52 | 2mm × 1mm N52 |
+| AlNiCo | 3mm × 1.5mm AlNiCo 5 | 2mm × 1mm AlNiCo 5 |
+| Coil | 100 turns 32 AWG | 80 turns 36 AWG |
+| Switching pulse | ~1.5A × 5ms | ~1A × 5ms |
+| Energy per switch | ~14 mJ | ~5 mJ |
+| ON force (at contact) | ~1 N (full NdFeB strength) | ~0.3 N |
+| OFF force (at contact) | <0.05 N (near-zero) | <0.02 N |
+| Holding power | **Zero** (bistable) | **Zero** |
+| Switching speed | ~5-10ms | ~5ms |
+
+**Verdict**: Best option for Seshat fabric. Strong structural force in ON state, near-zero in OFF state, zero holding power, fast switching. Used in industrial magnetic grippers and MIT M-Blocks modular robots.
+
+### Recommended Connection Zone Assignment
+
+| Zone | Magnet Type | Rationale |
+|------|------------|-----------|
+| EP_L, EP_R | Permanent NdFeB only | Structural. Rarely released. |
+| ST_TIP | **EPM** | Routing, peristalsis, polygon center. Must switch. |
+| F_TOP | **EPM** (Milestone 3+) | Inter-polygon reconfiguration. |
+| F_LEFT, F_RIGHT | **EPM** (Milestone 3+) | 3D reconfiguration. |
+
+### Option D: Hybrid (Revised)
+
+Combines permanent magnets (EP endpoints), EPMs (stem tip + face connections), and optionally SMA for emergency release of EP connections:
+
+- **EP_L, EP_R**: Permanent NdFeB (strong, passive, always-on)
+- **ST_TIP**: EPM (switchable, for routing and peristalsis)
+- **F_TOP, F_LEFT, F_RIGHT**: EPM strips (switchable, for reconfiguration)
+- **Emergency release**: SMA wire at EP endpoints (rarely used, for disassembly or damage isolation)
+
+**Verdict**: The production configuration. Passive structural connections where stability matters, switchable connections where reconfiguration is needed.
 
 ## 3. Magnetic Peristalsis Model
 

@@ -216,8 +216,10 @@ export function buildPolygonPreview(type, params = DEFAULTS) {
 
     // Rotate: crossbar tangent to polygon, stem pointing inward
     // The T-piece is built with stem pointing -Y, we need it pointing toward center
+    // After Rx(-π/2) lay flat, Rz(θ) maps stem to (sin θ, 0, cos θ) in world
+    // Need stem → (-cos α, 0, -sin α), so θ = -(α + π/2)
     piece.rotation.x = -Math.PI / 2; // Lay flat (Y→Z)
-    piece.rotation.z = angle + Math.PI; // Point stem inward
+    piece.rotation.z = -(angle + Math.PI / 2); // Point stem inward
 
     group.add(piece);
   }
