@@ -622,6 +622,7 @@ Layer 3 is what enables time-critical capabilities. Each cell is pre-loaded with
 - Whether hierarchical control (cell reflex / cluster coordinator / SBC strategist — see [DYNAMIC-COGNITION](./DYNAMIC-COGNITION.md) §3.4) is sufficient or needs additional architecture
 - Deployment and redeployment speeds (how fast can it reconfigure between roles?)
 - First body lattice tests: can magnetomyography detect muscle activation through 12,000+ Hall sensors? (DYNAMIC-COGNITION Prediction DC-1)
+- First sub-vocalization test: can neck/jaw Hall sensors classify silent words? (DYNAMIC-COGNITION Prediction DC-6)
 - First dynamic load test: does the traveling stiffness wave support a moving load where a static surface fails? (DYNAMIC-COGNITION Prediction DC-4)
 - Performance numbers that no simulation can provide
 
@@ -666,10 +667,11 @@ Body lattice (~12K cells at 12mm):  0.96 kg  (head/neck/torso/upper arms, always
 Backpack reserve (~53K cells):      4.24 kg
 Battery pack (500 Wh LiPo):        3.0 kg
 Brain module (SBC):                 0.3 kg
+Monocular HUD (head-mounted):      0.05 kg
 Backpack frame + harness:           1.0 kg
 Component reel pocket (repair):     0.5 kg
 ────────────────────────────────────
-Total:                             10.0 kg  (~22 lbs)
+Total:                             10.05 kg (~22 lbs)
 ```
 
 For a 6'4", 230 lb person: 10 kg is lighter than a typical school backpack. Less than half the weight of a military daypack. The body lattice alone (~1 kg) is comparable to a compression shirt.
@@ -679,7 +681,14 @@ For a 6'4", 230 lb person: 10 kg is lighter than a typical school backpack. Less
 - **Kinesthetic output**: stiffening, vibration, resistance, texture — 4,600 bits/sec bidirectional hands-free eyes-free interface
 - **Dynamic gait support**: traveling stiffness wave pre-positions ahead of each footfall (~74ms lead time via muscle prediction)
 - **Impact armor**: reflex stiffening in <5ms at impact point, 600J absorption across 2,000 cells
+- **Sub-vocalization channel**: neck/jaw cells read silent commands via magnetomyography — eyes-free, hands-free, silent authorization for Tier 2 capabilities (see [DYNAMIC-COGNITION](./DYNAMIC-COGNITION.md) §4.5)
 - **Operator coupling**: the body lattice IS the interface between operator and fabric intelligence
+
+**Monocular HUD** serves as:
+- **Exception handler**: opt-in visual display over one eye, activated by sub-vocalized "show" command
+- **Threat assessment**: displays 3D point cloud subset for situations where haptics can't convey enough (object identification)
+- **Tier 3 authorization**: required for visual-authorized capabilities (coilgun, directed acoustic, lethal force) — operator must *see the target* before confirming
+- **Not always-on**: default mode is pure kinesthetic + sub-vocal. HUD activates for 2-3 seconds when needed, then returns to dark.
 
 **Backpack** serves as:
 - **Battery station**: 500 Wh powers the fabric for 8+ hours of active operation (65W draw)
@@ -851,6 +860,8 @@ Milestone 5 proves all the capabilities. Milestone 6 proves they work **together
 | Does impact armor work? | Drop test on bench | Does it work when you actually fall? Does reflex stiffening via body lattice feel natural? |
 | How fast is redeployment? | Lab reconfiguration timing | Can you redeploy under stress in changing conditions? |
 | Is the cerebellar model sufficient? | Inference benchmark | Can it anticipate needs kinesthetically — no speech, no screen, no commands? |
+| Does sub-vocalization work? | Lab classification accuracy | Can operator silently authorize actions while moving, under stress? |
+| Is the authorization model right? | Tier assignment review | Are the tier boundaries correct? Too restrictive (slows operator)? Too permissive (safety risk)? |
 | Is 65K enough? | Cell count analysis | Which deployments compete for cells in practice? Does the body lattice plus reserves feel adequate? |
 
 ### Budget Summary (Milestone 6)
@@ -860,12 +871,13 @@ Milestone 5 proves all the capabilities. Milestone 6 proves they work **together
 | Backpack frame + harness (custom) | ~$200 |
 | Battery pack (500 Wh, custom form factor) | ~$500 |
 | Brain module (Raspberry Pi 5 or phone mount) | ~$100 |
+| Monocular HUD (micro OLED + prism, head-mounted) | ~$150 |
 | Component reel pocket + field repair kit | ~$200 |
 | Flight testing equipment (launch rig, tracking) | ~$500 |
 | Impact testing equipment (drop rig, force sensors) | ~$500 |
 | Field testing consumables | ~$500 |
-| **Milestone 6 incremental** | **~$2,500** |
-| **Running total (all milestones)** | **~$107,500** |
+| **Milestone 6 incremental** | **~$2,650** |
+| **Running total (all milestones)** | **~$107,650** |
 
 The incremental cost is small because the fabric itself (65K cells) was built in Milestone 5. Milestone 6 is integration, testing, and field validation — mostly engineering time, not hardware.
 
@@ -879,6 +891,9 @@ The incremental cost is small because the fabric itself (65K cells) was built in
 - Failure modes in the field (water, dirt, temperature, rough handling)
 - The optimal reserve-to-deployed ratio under real conditions
 - Whether the cerebellar model can operate entirely through kinesthetic input/output, or whether linguistic commands are sometimes needed as a fallback
+- **Sub-vocalization accuracy**: Can the neck/jaw magnetomyography reliably classify a 20-word command vocabulary? What accuracy under movement, stress, and fatigue? (DYNAMIC-COGNITION Prediction DC-6)
+- **Authorization loop latency**: Is the ~285ms haptic-authorized loop fast enough for real operational tempo? Does the visual-authorized loop (2-5s) feel tolerable for high-stakes decisions? (DYNAMIC-COGNITION Q-DC7)
+- **HUD utility vs. distraction**: How often do operators invoke the HUD? For how long? Does monocular display cause issues during movement?
 - What the next generation of cells needs to improve (informed by real-world data, not theory)
 
 ### Future Directions (Beyond M6)

@@ -1077,6 +1077,8 @@ The framework makes testable predictions about fabric behavior:
 
 **Prediction 10.5 (Dynamic Load Exceeds Static Capacity).** A 5-layer fabric surface at 12mm cells will support a 104 kg moving load (running operator) at speeds up to 5 m/s with a safety factor >2×, while the same surface fails under static loading of equivalent mass. This follows from the Persistence Axiom (see [DYNAMIC-COGNITION](./DYNAMIC-COGNITION.md), Theorem 1.2): each cell bears the load for only ~4ms per footfall contact, and the support surface pre-positions ahead of the load using muscle prediction with ~80ms lead time. The structure need never exist as a complete static bridge.
 
+**Prediction 10.6 (Sub-Vocalization via Neck Magnetomyography).** The body lattice's ~500-1,000 Hall sensors on the neck/jaw region will classify a 20-word command vocabulary from sub-vocalized (silent) speech with ≥90% accuracy, at <50ms classification latency. This enables a silent, eyes-free, hands-free operator authorization channel that does not sacrifice any of the six kinesthetic interface constraints. The massive sensor count compensates for individual sensor noise — the same statistical principle that enables limb magnetomyography (Prediction 10.5 / DYNAMIC-COGNITION DC-1).
+
 ### 10.2 Capability Bounds
 
 **Bound 10.1 (Maximum Structure Size).** With 16-bit addressing: |V| ≤ 65,536 cells. For 25mm cells, this allows structures up to ~6.4m × 6.4m as a single flat sheet, or ~40cm × 40cm × 40cm as a solid cube.
@@ -1108,6 +1110,8 @@ The framework makes testable predictions about fabric behavior:
 **Q7 (Operator-Fabric Coupling).** The Dynamic Cognition framework (see [DYNAMIC-COGNITION](./DYNAMIC-COGNITION.md)) proposes that a body-worn lattice of ~12,000 cells can detect operator muscle activation ~80ms before limb movement via aggregate magnetomyography. Can consumer-grade Hall sensors (SS49E, DRV5053) achieve the required ~10-100 pT sensitivity through statistical aggregation across 1,000+ sensors? If so, the prediction window enables pre-positioning of support surfaces for dynamic load bearing — transforming the fabric from a static structure that cannot carry body weight into a dynamic flow that can.
 
 **Q8 (Flows vs. Configurations).** This document analyzes the fabric's properties at fixed configurations. The Dynamic Cognition framework shows that capabilities emerge from continuous *flows between* configurations (dismantling coilgun, traveling stiffness wave, running-on-wing flight). How should the Behavioral Catalog (Section 5) be extended to describe macro-behaviors as flows rather than sequences of discrete configurations?
+
+**Q9 (Authorization Tier Boundaries).** The Dynamic Cognition framework (Section 4.5) defines a three-tier authorization model (autonomous / haptic-authorized / visual-authorized) for fabric capabilities. Where exactly should the boundaries fall? The current assignment is conservative — but is it correct? Could a haptic-authorized evasive maneuver cause harm to bystanders? Could a visual-authorized coilgun be too slow in a genuine emergency? The tier boundaries encode an ethical position that cannot be derived from physics alone.
 
 ---
 

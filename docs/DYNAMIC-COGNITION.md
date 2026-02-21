@@ -19,6 +19,7 @@ This document establishes the formal framework for **dynamic cognition**: the th
 The document is organized as follows:
 - **Sections 1–2**: The Persistence Axiom and the theory of flows (why static analysis fails)
 - **Sections 3–4**: The Cerebellar Model and the Kinesthetic Interface (how the fabric thinks and communicates)
+- **Section 4.5**: The Authorization Architecture (how the operator stays in the loop for destructive capabilities)
 - **Sections 5–6**: The Coupled System and the Spatial Sensorium (operator + fabric as one dynamical system)
 - **Sections 7–8**: Revised capability analysis and communication layer mapping
 - **Section 9**: The Training Problem (how the coupling improves over time)
@@ -448,6 +449,110 @@ This is a natural extension of human proprioception. Humans already have a spati
 
 ---
 
+## 4.5 The Authorization Architecture
+
+### 4.5.1 The Problem: Autonomous Capability Without Autonomous Authority
+
+The cerebellar model (Section 3) runs at 200 Hz and doesn't have a "should I?" — only a "can I?" For non-destructive capabilities (gait support, impact absorption, thermal regulation, spatial awareness), this is correct. The fabric should stiffen your knee without asking permission.
+
+But the same physics that enables dynamic gait support also enables a coilgun. The same phased array that provides echolocation can project 130+ dB focused sound. The same EPMs that switch bond states can pulse directed electromagnetic energy. Once the cerebellar model has learned these capabilities, they exist as options in the trained policy. Autonomous execution of destructive capabilities is architecturally possible and ethically impermissible.
+
+**Principle**: The most destructive capabilities require the most human engagement. The fabric *can* fire a coilgun autonomously. It *won't* until the operator has authorized it. This is not a software lock — it is an architectural tier baked into the authorization model.
+
+### 4.5.2 Three-Tier Authorization Model
+
+| Tier | Speed | Authorization | Examples |
+|------|-------|---------------|----------|
+| **Autonomous** | <50ms | None needed | Impact absorption, gait support, thermal regulation, spatial awareness, energy harvesting |
+| **Haptic-authorized** | ~285ms | Sub-vocalized command | Evasive maneuver, defensive stiffening, sound warning, shield formation, scout deployment |
+| **Visual-authorized** | ~2-5s | See + confirm | Coilgun, directed EPM pulse, lethal-force acoustic projection, any action with destructive potential |
+
+The tier assignment follows a simple rule: **if the action could injure a person, the operator must authorize it.** If the action could *kill*, the operator must *see the target* and authorize it.
+
+### 4.5.3 The Sub-Vocalization Channel
+
+The body lattice covers the operator's neck and jaw. Magnetomyography reads muscle activation. Sub-vocalization — thinking words without speaking them aloud — activates the same laryngeal, jaw, and tongue muscles at lower amplitude. This has been demonstrated in laboratory settings (MIT AlterEgo project, 2018) with a handful of surface electrodes.
+
+The body lattice has *thousands* of cells on the neck region. Where AlterEgo used ~10 electrodes, the fabric uses ~500-1,000 Hall sensors reading the same muscle groups at 100 Hz. The signal-to-noise advantage of massive sensor count (same principle as magnetomyography for limb muscles — see Section 4.2) makes sub-vocalization detection feasible with consumer-grade sensors.
+
+**Definition 4.3 (Sub-Vocalization Channel).** The sub-vocalization interface S_v is a mapping:
+
+```
+S_v: Δ_neck(t) → W
+```
+
+where Δ_neck(t) is the sensor state of neck/jaw cells and W is a word from a small command vocabulary (|W| ≈ 20-30 words).
+
+The channel is:
+- **Eyes-free** (no screen required)
+- **Hands-free** (no button, gesture, or touch)
+- **Silent** (no audible speech — undetectable by observers)
+- **Always-on** (neck cells are part of the body lattice)
+- **Non-surgical** (skin-contact Hall sensors, not implanted electrodes)
+
+### 4.5.4 The Haptic-Authorized Loop
+
+For Tier 2 (haptic-authorized) actions, the full authorization loop:
+
+```
+1. Fabric detects situation        (cerebellar loop, ~5ms)
+2. Fabric communicates haptically  (direction, distance, urgency — ~20ms)
+3. Operator sub-vocalizes command  ("deflect" / "evade" / "hold" — silent, ~200ms)
+4. Fabric reads neck/jaw muscles   (magnetomyography, ~50ms)
+5. Fabric executes authorized action (~10ms)
+
+Total: ~285ms
+```
+
+Compare to the kinesthetic awareness loop (Section 4.3): 225ms. The authorization loop adds ~60ms for sub-vocalization detection — less than one human blink.
+
+The command vocabulary is intentionally small:
+
+| Category | Commands | Purpose |
+|----------|----------|---------|
+| Authorization | yes, no, hold, stop | Binary accept/reject |
+| Response class | evade, deflect, engage, suppress | Action selection |
+| Intensity | soft, full, warning | Force scaling |
+| Targeting | track, release, sweep | Spatial direction |
+| Mode | show, clear, sleep, wake | System state |
+
+~20-30 words total. This is well within demonstrated sub-vocalization recognition capability. The operator is not dictating sentences — they are issuing one-word authorizations to a system that already knows the situation.
+
+### 4.5.5 The Visual Channel: HUD as Exception Handler
+
+Haptics can communicate *where*, *how urgent*, and *how fast*. It cannot communicate *what*. A directional pressure on your back tells you something is behind you. It cannot tell you whether that person is holding a weapon or a phone.
+
+For Tier 3 (visual-authorized) actions and for novel situations where the operator needs to *see*, the system includes a monocular heads-up display (HUD):
+
+**Properties**:
+- Single eye (dominant eye), leaving the other eye on the real world
+- Lightweight, mounted on head portion of body lattice
+- Displays a subset of the 3D point cloud the fabric already maintains (Section 6)
+- Activated on-demand by sub-vocalized "show" — NOT always-on
+- De-activated by "clear" or after authorization is issued
+
+**The HUD is not the interface. It is the exception handler.** The default mode is pure haptic + sub-vocal. The operator invokes the HUD when haptics isn't enough — when they need to *see* before deciding. Typical HUD activation: 2-3 seconds, then back to full kinesthetic.
+
+The data displayed is not new. The 3D point cloud (Section 6), threat classification, and option set are computed continuously by the cerebellar model regardless of whether the HUD is active. The HUD is a viewport into state the fabric maintains anyway. Architecturally trivial. Ethically essential.
+
+### 4.5.6 Authorization as Architectural Constraint
+
+The three-tier model is enforced at the hardware level, not the software level:
+
+- **Tier 1 (autonomous)**: Cell reflex policies execute on Layer 3 trigger. No authorization gate.
+- **Tier 2 (haptic-authorized)**: Cluster coordinators hold the action pending until the sub-vocalization classifier returns a valid command. The classifier runs on the SBC (Layer 2). No valid command → no action → timeout → capability disarms.
+- **Tier 3 (visual-authorized)**: The SBC holds the action pending until BOTH the HUD has been active for ≥500ms (the operator has had time to see) AND a confirmatory sub-vocalization is received. HUD display alone is not authorization. Vocalization alone is not authorization. Both are required.
+
+This means:
+- A compromised LLM cannot fire the coilgun (it lacks the sub-vocalization signal)
+- A confused operator cannot accidentally fire the coilgun (they must look AND confirm)
+- An unconscious operator cannot be used to fire the coilgun (no sub-vocalization possible)
+- The fabric sleeping autonomously (Q-DC5) cannot access Tier 2 or 3 capabilities
+
+**Invariant 4.5.1 (Authorization Monotonicity).** Capability destructiveness increases monotonically with authorization requirements. No re-classification can lower the tier of a capability — only raise it. Tier assignments are set at manufacture and cannot be modified by firmware, the LLM, or the operator.
+
+---
+
 ## 5. The Coupled System
 
 ### 5.1 Formal Definition
@@ -788,6 +893,8 @@ A new operator starts at κ ≈ 0.3 (transferred) instead of κ ≈ 0.1 (cold st
 
 **Prediction DC-5 (Dismantling Recoil).** A 20-cell dismantling coilgun barrel will show <0.1N peak force on any neighboring fabric cell during firing, compared to >0.8N for a rigid barrel — measured by Hall sensor readings on cells adjacent to the barrel.
 
+**Prediction DC-6 (Sub-Vocalization Recognition).** The body lattice's ~500-1,000 neck/jaw Hall sensors will achieve ≥90% accuracy on a 20-word command vocabulary via sub-vocalization (no audible speech), using the same statistical aggregation principle that enables magnetomyography (Prediction DC-1). Classification latency: <50ms from onset of sub-vocalized word.
+
 ### 10.2 Performance Bounds
 
 **Bound DC-1 (Maximum Prediction Horizon).** The fabric can predict operator movement no more than Δt_max ≈ 200ms ahead (limited by the temporal extent of pre-movement muscle activation patterns). Beyond this horizon, prediction accuracy drops below useful thresholds.
@@ -812,6 +919,10 @@ A new operator starts at κ ≈ 0.3 (transferred) instead of κ ≈ 0.1 (cold st
 
 **Q-DC6 (Long-Term Adaptation).** Over months of use, does the coupling become so tight that the operator experiences the fabric's sensorium as a genuine new sense? Neuroplasticity research on sensory substitution (e.g., BrainPort, cochlear implants) suggests this is plausible but requires extended study.
 
+**Q-DC7 (Authorization Latency Under Stress).** The haptic-authorized loop is ~285ms in calm conditions. Under combat stress, sub-vocalization accuracy may degrade (muscle tension, elevated heart rate, cognitive load). What is the accuracy/latency tradeoff under stress? Does the cerebellar model need a "stressed operator" mode that accepts fewer, simpler commands?
+
+**Q-DC8 (Sub-Vocalization vs. Trained Haptic Authorization).** As coupling tightness κ increases, can some Tier 2 authorizations migrate from sub-vocalization to pure haptic? For example: a trained operator might authorize "deflect" by a specific muscle tension pattern (intentional brace) rather than sub-vocalizing the word. If the cerebellar model can reliably distinguish intentional authorization patterns from reflexive muscle activity, the sub-vocalization channel becomes a fallback for novel situations rather than the primary authorization mechanism.
+
 ---
 
 ## Appendix A: Notation Reference
@@ -835,6 +946,8 @@ A new operator starts at κ ≈ 0.3 (transferred) instead of κ ≈ 0.1 (cold st
 | Γ | Operator response function |
 | κ | Coupling tightness |
 | Δt_predict | Muscle prediction window (~80ms) |
+| S_v | Sub-vocalization classifier (neck/jaw magnetomyography → command word) |
+| W | Command vocabulary for sub-vocalization (~20-30 words) |
 
 ## Appendix B: Biological Analogies
 
@@ -859,8 +972,12 @@ The cerebellar model draws on three biological systems:
 | Haptic watch (Apple Watch) | ~5 | ~200ms | No | Yes | Yes | Partial |
 | BCI (Neuralink-class) | ~100-1000 | ~50ms | Partial | Yes | Yes | Yes |
 | **Kinesthetic lattice** | **~4,600** | **~225ms** | **Full** | **Yes** | **Yes** | **Yes** |
+| + sub-vocalization | +~30 wpm | +~60ms | Full + commands | Yes | Yes | Yes |
+| + HUD (on-demand) | +high | +~500ms | Full + visual | No (one eye) | Yes | No (opt-in) |
 
 The kinesthetic lattice is the highest-bandwidth bidirectional eyes-free hands-free always-on human-machine interface that does not require surgery.
+
+The sub-vocalization channel adds a discrete command vocabulary (~20-30 words) without sacrificing any of the six constraints. The monocular HUD sacrifices two constraints (eyes-free, always-on) but is invoked only for visual-authorized actions (see Section 4.5) — the operator opts into visual mode for 2-3 seconds, then returns to full kinesthetic.
 
 ---
 
