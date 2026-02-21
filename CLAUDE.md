@@ -60,6 +60,7 @@ You are working on **seshat-fabric**, a programmable metamaterial system built o
 - `docs/physics/MAGNETIC-MODEL.md` — Force curves, field interactions, absorption waves
 - `docs/physics/POWER-BUDGET.md` — Energy harvesting, consumption, and balance analysis
 - `docs/physics/IMPACT-ABSORPTION.md` — Regenerative impact mechanics
+- `docs/physics/SPRING-CATAPULT.md` — Octagon barrel spring acceleration (vs. magnetic coilgun)
 - `docs/fabrication/T-PIECE-SPEC.md` — Geometry, materials, manufacturing constraints
 
 ## Simulator

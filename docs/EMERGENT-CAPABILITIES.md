@@ -16,6 +16,8 @@ This document catalogs each capability, derives its performance bounds, analyzes
 
 **Important**: The capabilities below are analyzed for *static configurations* of the fabric. The companion document [DYNAMIC-COGNITION.md](./DYNAMIC-COGNITION.md) shows that several capabilities previously assessed as infeasible (e.g., load-bearing, high-recoil coilgun) become feasible when analyzed as continuous *flows* between configurations rather than static snapshots. See DYNAMIC-COGNITION Sections 1 and 7 for the revised capability analysis.
 
+**Authorization note**: Many capabilities below have destructive potential. The fabric enforces a three-tier authorization model (autonomous / haptic-authorized / visual-authorized) that ensures human-in-the-loop control over any capability that could cause harm. See [DYNAMIC-COGNITION Section 4.5](./DYNAMIC-COGNITION.md) for the full authorization architecture. Each capability below is tagged with its authorization tier.
+
 ### The Primitives (What Each Cell Already Has)
 
 | Component | Originally designed for | Also happens to be |
@@ -31,6 +33,8 @@ This document catalogs each capability, derives its performance bounds, analyzes
 ---
 
 ## 1. Phased Array Antenna / Software-Defined Radar
+
+**Authorization**: Receive-only / passive radar: *Autonomous*. Active transmit / beam-forming: *Haptic-authorized*. Electronic warfare / jamming: *Visual-authorized*.
 
 ### Physical Basis
 
@@ -92,6 +96,8 @@ A 10,000-cell fabric operating as a phased array at 6 GHz has the directivity of
 ---
 
 ## 2. Acoustic Transducer / Echolocation
+
+**Authorization**: Echolocation / passive listening: *Autonomous*. Directional audio projection: *Haptic-authorized*. Non-lethal acoustic deterrent (>120 dB focused): *Visual-authorized*.
 
 ### Physical Basis
 
@@ -155,6 +161,8 @@ At 10K cells, the fabric's acoustic output (130 dB) is comparable to a jet engin
 
 ## 3. Programmable Metamaterial
 
+**Authorization**: Stiffness / shape changes: *Autonomous*. Acoustic cloaking / metamaterial weapon effects: *Haptic-authorized*.
+
 ### Physical Basis
 
 A metamaterial is a material whose bulk properties emerge from its microstructure rather than its chemical composition. The fabric's cells ARE the microstructure, and their properties are programmable.
@@ -215,6 +223,8 @@ These properties improve with cell count because finer microstructure = more pre
 
 ## 4. Elastic Energy Storage / Catapult
 
+**Authorization**: Energy storage / shape snapping: *Autonomous*. Directed release / jumping: *Haptic-authorized*. Catapult-assisted coilgun: *Visual-authorized*.
+
 ### Physical Basis
 
 Each compliant stem is a spring with spring constant k_stem. When compressed or extended from rest, it stores elastic energy:
@@ -258,11 +268,13 @@ This is obviously unrealistic (air resistance, not all energy converts to vertic
 
 **Shape snapping**: The fabric stores a target shape as compressed stems, then snaps into it faster than motorized reconfiguration — mechanical rather than electrical.
 
-**Combined with coilgun**: Pre-compressed stems along a runway release in sequence, adding spring force to magnetic force. This approximately doubles the projectile exit velocity.
+**Combined with coilgun (Spring Catapult)**: Pre-compressed stems in an octagon barrel configuration release in sequence, providing the primary acceleration force. The spring catapult stores 240× more energy per cell than magnetic attraction and delivers force by direct contact (no suck-back, no 1/d⁴ falloff). See **[SPRING-CATAPULT.md](./physics/SPRING-CATAPULT.md)** for the full analysis: a 25-ring octagon barrel (200 cells) achieves supersonic velocities for a 0.1g projectile at 30% efficiency, using only 0.3% of a 65K fabric.
 
 ---
 
 ## 5. Distributed Magnetometer Array
+
+**Authorization**: *Autonomous*. Passive sensing only — no destructive potential.
 
 ### Physical Basis
 
@@ -303,6 +315,8 @@ The sensor density also enables **magnetic field tomography**: reconstructing th
 ---
 
 ## 6. Smart Energy Micro-Grid
+
+**Authorization**: *Autonomous*. Energy harvesting and distribution are internal operations with no external effect.
 
 ### Physical Basis
 
@@ -358,6 +372,8 @@ That's **supersonic** (Mach 3). Now, practical efficiency losses and air resista
 
 ## 7. Distributed Computing Mesh
 
+**Authorization**: *Autonomous*. Internal computation — no external effect. (The *decisions* made by the computing mesh may trigger actions at other tiers.)
+
 ### Physical Basis
 
 Each ESP32-C3 runs at 160 MHz with 400 KB SRAM. The ε-graph provides nearest-neighbor communication at ~1 kbps (inductive) or potentially faster via direct electrical contact through face connections.
@@ -398,6 +414,8 @@ The ε-graph's bounded degree (≤6) means the mesh has the topology of a 3D lat
 
 ## 8. Physical Unclonable Function (PUF) / Cryptographic Identity
 
+**Authorization**: *Autonomous*. Identity verification is internal and passive.
+
 ### Physical Basis
 
 Each cell has a unique UUID. The exact configuration (which UUID at which position, connected to whom, in what mode) is a high-entropy state.
@@ -432,6 +450,8 @@ This is unforgeable without possessing the actual fabric.
 ---
 
 ## 9. Programmable Airflow / Filtration
+
+**Authorization**: *Autonomous*. Ventilation and filtration are passive comfort functions.
 
 ### Physical Basis
 
@@ -473,6 +493,8 @@ The fabric can control:
 
 ## 10. Ballistic Self-Deployment / Fabric Mitosis
 
+**Authorization**: Scout/relay deployment (non-weaponized): *Haptic-authorized*. Coilgun / weaponized projectile launch: *Visual-authorized*.
+
 ### Physical Basis
 
 Magnetic peristalsis with pre-configured timing becomes a coilgun (see *Mathematical Foundations*, Section 6.2). Combined with the fabric's self-assembly capability, this enables the fabric to eject packets of cells that reassemble at the landing site.
@@ -487,6 +509,9 @@ With pre-computed firing times, the speed limit is magnet switching time, not se
 | Electromagnet | ~1 ms | ~25 m/s |
 | MOSFET coil | ~10 μs | ~2,500 m/s (theoretical, other limits dominate) |
 | Hybrid + spring assist | ~1 ms | ~35 m/s (EM + elastic) |
+| **Spring catapult (octagon barrel)** | ~1 ms (EPM latch release) | **~1,000+ m/s** (mechanical, see below) |
+
+**Note**: The spring catapult approach (see [SPRING-CATAPULT.md](./physics/SPRING-CATAPULT.md)) achieves dramatically higher velocities by using stem springs as the primary energy source rather than electromagnetic fields. An octagon barrel with 8 inward-facing stems per ring stores 5.8 J per ring — 1,900× more than a 3mm EPM magnetic stage. The EPMs serve as bistable latches holding compressed springs, not as force generators. This eliminates the suck-back problem and achieves 50-70% mechanical efficiency vs. 5-10% electromagnetic efficiency at cell scale.
 
 ### Ballistic Range
 
@@ -617,6 +642,28 @@ Distributed across 50 runway cells over 10ms: F_per_cell = 0.02 N (negligible co
 But at higher velocities or heavier projectiles, recoil becomes a real constraint *for a static barrel*. Launching a 10g projectile at 100 m/s requires 1 N·s impulse — potentially enough to disrupt the runway structure.
 
 **Dynamic resolution (Dismantling Principle)**: The [DYNAMIC-COGNITION](./DYNAMIC-COGNITION.md) framework (Theorem 1.1) shows that if the barrel dismantles from the rear — each cell breaking its bonds immediately after the projectile passes — the recoil impulse is distributed as p/N per cell, with each cell absorbing its share independently rather than transmitting it through bonds. A 20-cell barrel launching a 0.1g projectile at 40 m/s gives each cell a recoil velocity of only ~2.5 m/s (walking speed), with per-cell energy of ~0.25 μJ — trivially recaptured on magnetic reconnection. The recoil constraint evaporates for dismantling barrels.
+
+### Authorization Architecture
+
+Every capability above is tagged with an authorization tier. The summary:
+
+| Capability | Autonomous | Haptic-Authorized | Visual-Authorized |
+|-----------|-----------|-------------------|-------------------|
+| 1. Phased Array | Passive receive | Active transmit, beam-forming | Jamming, EW |
+| 2. Acoustic | Echolocation, listening | Directional audio | Acoustic deterrent (>120 dB) |
+| 3. Metamaterial | Stiffness, shape | Acoustic cloak | — |
+| 4. Elastic Storage | Energy storage, shape snap | Jumping, directed release | Catapult-assisted coilgun |
+| 5. Magnetometer | All modes | — | — |
+| 6. Energy Grid | All modes | — | — |
+| 7. Computing Mesh | All modes | — | — |
+| 8. PUF / Crypto | All modes | — | — |
+| 9. Airflow | All modes | — | — |
+| 10. Ballistic Deploy | — | Scout/relay deployment | Coilgun, weaponized launch |
+| 11. Combined | Per-component tier | Per-component tier | Highest component tier governs |
+
+**Rule**: When capabilities combine, the *highest* authorization tier of any component governs the combination. Echolocation (Autonomous) + Coilgun (Visual-authorized) = Visual-authorized.
+
+See [DYNAMIC-COGNITION Section 4.5](./DYNAMIC-COGNITION.md) for the full authorization architecture including the sub-vocalization channel and monocular HUD.
 
 ### Energy Recovery Time
 
